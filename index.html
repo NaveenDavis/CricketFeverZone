@@ -103,7 +103,7 @@ h1 {
 <body>
 
 <div class="container">
-  <h1 style="font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;">Cricket Series Details</h1>
+  <h1 style="font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;color: #ddd;">Cricket Series Details</h1>
   <div id="seriesDetails"></div>
   <div id="type" style="margin-left: 10%;">
     <div id="errorMessage" style="color: #28a745; background-color: #fff;border-radius: 20px;font-family: 'Times New Roman', Times, serif; margin-left: -12%;
@@ -115,6 +115,10 @@ h1 {
 <marquee width="80%" direction="left" height="100px">
   <p style="color: #1fffa2;">Welcome to the ultimate destination for cricket lovers 🏏, where every boundary and wicket unfolds a story of passion and excitement! 🌟</p>
   </marquee>
+
+  <marquee width="60%" direction="left" height="100px">
+    <p id="status" style="color: #eeffa2; background-color: #252424;"></p>
+    </marquee>
 <script>
 // JavaScript code for fetching and displaying series details goes here
 async function fetchData() {
@@ -167,11 +171,23 @@ function displayErrorMessage(message) {
 }
 async function displaySeriesDetails() {
   const data = await fetchData();
-  const seriesName = 'Indian Premier League 2024'; // Specify the seriesName here
-  console.log(getElementById("message"));
-  const seriesMatches = data.typeMatches.find(match => match.seriesMatches.some(series => series.seriesAdWrapper.seriesName === seriesName));
-  if (seriesMatches) {
-    const matches = seriesMatches.seriesMatches[0].seriesAdWrapper.matches;
+  if (!data || !data.typeMatches) {
+    console.error('Error: No data or typeMatches array found');
+    return;
+  }
+
+  const seriesName = 'Indian Premier League 2024';
+  const seriesMatch = data.typeMatches.find(match => {
+    if (match.seriesMatches && Array.isArray(match.seriesMatches)) {
+      return match.seriesMatches.some(series => {
+        return series.seriesAdWrapper && series.seriesAdWrapper.seriesName === seriesName;
+      });
+    }
+    return false;
+  });
+
+  if (seriesMatch) {
+    const matches = seriesMatch.seriesMatches[0].seriesAdWrapper.matches;
     const seriesDetailsDiv = document.getElementById('seriesDetails');
 
     for (const match of matches) {
@@ -203,12 +219,15 @@ async function displaySeriesDetails() {
         <div class="venue-info">Venue: ${venueInfo.ground}, ${venueInfo.city}, ${venueInfo.timezone}</div>
         <div class="status">Status: ${matchInfo.status}</div>
       `;
+      var matchStatus = `${matchInfo.status}`;
+      document.getElementById("status").innerText = matchStatus;
       seriesDetailsDiv.appendChild(matchElement); // Append match element to container
     }
   } else {
     console.log('Series not found');
   }
 }
+
 
 // Call the displaySeriesDetails function
 displaySeriesDetails();
