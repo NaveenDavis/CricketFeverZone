@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cricket Series Details</title>
+<style>
+/* Common CSS Styles */
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+}
+
+.container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+  background-color: rgba(223, 240, 197, 0.3); /* Semi-transparent white background */
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+h1 {
+  text-align: center;
+  color: #333;
+}
+
+.match-info {
+  background-color: #fff;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  margin-bottom: 20px;
+  padding: 20px;
+}
+
+.match-info h2 {
+  margin-top: 0;
+}
+
+.team-info {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.team-logo {
+  margin-right: 10px;
+  border-radius: 50%;
+  border: 2px solid #fff;
+}
+
+.team-name {
+  font-weight: bold;
+  margin-right: 20px;
+}
+
+.team-score {
+  font-weight: bold;
+  color: #007bff; /* Blue color for score */
+}
+
+.venue-info {
+  font-style: italic;
+}
+
+.status {
+  font-weight: bold;
+  color: #28a745; /* Green color for status */
+}
+/* Mobile-Specific Styles */
+@media only screen and (max-width:600px) {
+  body {
+    background-image: url('https://w0.peakpx.com/wallpaper/647/560/HD-wallpaper-m-s-dhoni-team-india-ipl-indian-cricket-team-ms-dhoni-ms-chennai-super-kings-csk-india-thumbnail.jpg'); /* Background image for mobile */
+    background-image: url('https://w0.peakpx.com/wallpaper/395/174/HD-wallpaper-chennai-super-king-definetly-not-chennai-super-king-ms-dhoni-ipl-cricket-team-thumbnail.jpg');
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-color: rgba(255, 255, 255, 0.8);
+  }
+
+  .container {
+    padding: 10px;
+  }
+
+  .team-info {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
+
+/* Desktop-Specific Styles */
+@media screen and (min-width: 601px) {
+  body {
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-image: 
+    linear-gradient(to bottom, rgba(245, 246, 252, 0.52), rgba(10, 10, 10, 0.986)),
+    url('backgroundlap.jpg');
+  }
+}
+
+</style>
+</head>
+<body>
+
+<div class="container">
+  <h1 style="font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;">Cricket Series Details</h1>
+  <div id="seriesDetails"></div>
+  <div id="type" style="margin-left: 10%;">
+    <div id="errorMessage" style="color: #28a745; background-color: #fff;border-radius: 20px;font-family: 'Times New Roman', Times, serif; margin-left: -12%;
+    text-align: center;"></div>
+  </div>
+</div>
+
+<script>
+// JavaScript code for fetching and displaying series details goes here
+async function fetchData() {
+  // Function to fetch data from API
+  const url = 'https://cricbuzz-cricket.p.rapidapi.com/matches/v1/live';
+  const options = {
+    method: 'GET',
+    headers: {
+      'X-RapidAPI-Key': 'bedfc3e9f7msha22ebaa60d69127p110944jsn0a88ad6dff9c',
+      'X-RapidAPI-Host': 'cricbuzz-cricket.p.rapidapi.com'
+    }
+  };
+
+  try {
+    const response = await fetch(url, options);
+    const data = await response.json();
+    console.log(data);
+    if (data.message) {
+      throw new Error(data.message);
+    }
+    return data; // Return JSON data
+  } catch (error) {
+    console.error(error);
+    displayErrorMessage("Sorry for the inconvenience. Site maintenance in progress.🛠️ Please try again later. Have a good day! 💫😇");
+  }
+}
+
+async function fetchTeamLogo(imageId) {
+  // Function to fetch team logo using imageId
+  const url = `https://cricbuzz-cricket.p.rapidapi.com/img/v1/i1/c${imageId}/i.jpg`;
+  const options = {
+    method: 'GET',
+    headers: {
+      'X-RapidAPI-Key': 'bedfc3e9f7msha22ebaa60d69127p110944jsn0a88ad6dff9c',
+      'X-RapidAPI-Host': 'cricbuzz-cricket.p.rapidapi.com'
+    }
+  };
+
+  try {
+    const response = await fetch(url, options);
+    return response.url; // Return URL of fetched image
+  } catch (error) {
+    console.error(error);
+    return ''; // Return empty string if error occurs
+  }
+}
+function displayErrorMessage(message) {
+  const errorMessageDiv = document.getElementById('errorMessage');
+  errorMessageDiv.innerHTML = `<p>${message}</p>`;
+}
+async function displaySeriesDetails() {
+  const data = await fetchData();
+  const seriesName = 'Indian Premier League 2024'; // Specify the seriesName here
+  console.log(getElementById("message"));
+  const seriesMatches = data.typeMatches.find(match => match.seriesMatches.some(series => series.seriesAdWrapper.seriesName === seriesName));
+  if (seriesMatches) {
+    const matches = seriesMatches.seriesMatches[0].seriesAdWrapper.matches;
+    const seriesDetailsDiv = document.getElementById('seriesDetails');
+
+    for (const match of matches) {
+      const matchInfo = match.matchInfo;
+      const team1 = matchInfo.team1;
+      const team2 = matchInfo.team2;
+      const matchScore = match.matchScore;
+      const venueInfo = matchInfo.venueInfo;
+
+      // Fetch team logos asynchronously
+      const team1LogoUrl = await fetchTeamLogo(team1.imageId);
+      const team2LogoUrl = await fetchTeamLogo(team2.imageId);
+
+      // Create match element
+      const matchElement = document.createElement('div');
+      matchElement.classList.add('match-info');
+      matchElement.innerHTML = `
+        <h2>${matchInfo.matchDesc}</h2>
+        <div class="team-info">
+          <img src="${team1LogoUrl}" alt="${team1.teamName}" class="team-logo" width="50" height="50">
+          <div class="team-name">${team1.teamName}</div>
+          <div class="team-score">Score: ${matchScore.team1Score.inngs1.runs}/${matchScore.team1Score.inngs1.wickets}</div>
+        </div>
+        <div class="team-info">
+          <img src="${team2LogoUrl}" alt="${team2.teamName}" class="team-logo" width="50" height="50">
+          <div class="team-name">${team2.teamName}</div>
+          <div class="team-score">Score: ${matchScore.team2Score.inngs1.runs}/${matchScore.team2Score.inngs1.wickets}</div>
+        </div>
+        <div class="venue-info">Venue: ${venueInfo.ground}, ${venueInfo.city}, ${venueInfo.timezone}</div>
+        <div class="status">Status: ${matchInfo.status}</div>
+      `;
+      seriesDetailsDiv.appendChild(matchElement); // Append match element to container
+    }
+  } else {
+    console.log('Series not found');
+  }
+}
+
+// Call the displaySeriesDetails function
+displaySeriesDetails();
+</script>
+
+</body>
+</html>
