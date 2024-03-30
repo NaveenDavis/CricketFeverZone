@@ -119,6 +119,7 @@ h1 {
 
   <marquee width="60%" direction="left" height="100px">
     <p id="status" style="color: #eeffa2; background-color: #252424;"></p>
+    <p id="status" style="color: #eeffa2; background-color: #252424;"></p>
     </marquee>
 <script>
 // JavaScript code for fetching and displaying series details goes here
@@ -225,7 +226,8 @@ async function displaySeriesDetails() {
       seriesDetailsDiv.appendChild(matchElement); // Append match element to container
     }
   } else {
-    console.log('Series not found');
+    console.log('No IPL live action on the screen now, but the excitement never fades. 🏏');
+    document.getElementById("status").innerText = "No IPL live action on the screen now, but the excitement never fades. 🏏";
   }
 }
 
