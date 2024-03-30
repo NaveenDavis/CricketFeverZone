@@ -194,36 +194,39 @@ async function displaySeriesDetails() {
 
     for (const match of matches) {
       const matchInfo = match.matchInfo;
-      const team1 = matchInfo.team1;
-      const team2 = matchInfo.team2;
       const matchScore = match.matchScore;
-      const venueInfo = matchInfo.venueInfo;
+      const team1 = matchInfo && matchInfo.team1 ? matchInfo.team1 : {};
+      const team2 = matchInfo && matchInfo.team2 ? matchInfo.team2 : {};
+      const venueInfo = matchInfo && matchInfo.venueInfo ? matchInfo.venueInfo : {};
 
-      // Fetch team logos asynchronously
-      const team1LogoUrl = await fetchTeamLogo(team1.imageId);
-      const team2LogoUrl = await fetchTeamLogo(team2.imageId);
+// Fetch team logos asynchronously
+const team1LogoUrl = await fetchTeamLogo(team1.imageId);
+const team2LogoUrl = await fetchTeamLogo(team2.imageId);
 
-      // Create match element
-      const matchElement = document.createElement('div');
-      matchElement.classList.add('match-info');
-      matchElement.innerHTML = `
-        <h2>${matchInfo.matchDesc}</h2>
-        <div class="team-info">
-          <img src="${team1LogoUrl}" alt="${team1.teamName}" class="team-logo" width="50" height="50">
-          <div class="team-name">${team1.teamName}</div>
-          <div class="team-score">Score: ${matchScore.team1Score.inngs1.runs}/${matchScore.team1Score.inngs1.wickets}</div>
-        </div>
-        <div class="team-info">
-          <img src="${team2LogoUrl}" alt="${team2.teamName}" class="team-logo" width="50" height="50">
-          <div class="team-name">${team2.teamName}</div>
-          <div class="team-score">Score: ${matchScore.team2Score.inngs1.runs}/${matchScore.team2Score.inngs1.wickets}</div>
-        </div>
-        <div class="venue-info">Venue: ${venueInfo.ground}, ${venueInfo.city}, ${venueInfo.timezone}</div>
-        <div class="status">Status: ${matchInfo.status}</div>
-      `;
-      var matchStatus = `${matchInfo.status}`;
-      document.getElementById("status").innerText = matchStatus;
-      seriesDetailsDiv.appendChild(matchElement); // Append match element to container
+// Create match element
+const matchElement = document.createElement('div');
+matchElement.classList.add('match-info');
+matchElement.innerHTML = `
+  <h2>${matchInfo && matchInfo.matchDesc ? matchInfo.matchDesc : ''}</h2>
+  <div class="team-info">
+    <img src="${team1LogoUrl}" alt="${team1.teamName || ''}" class="team-logo" width="50" height="50">
+    <div class="team-name">${team1.teamName || ''}</div>
+    <div class="team-score">Score: 🏏 ${matchScore && matchScore.team1Score && matchScore.team1Score.inngs1 ? matchScore.team1Score.inngs1.runs + '/' + (matchScore.team1Score.inngs1.wickets !== undefined ? matchScore.team1Score.inngs1.wickets : 0) + ' -> Overs: ' + (matchScore.team1Score.inngs1.overs !== undefined ? matchScore.team1Score.inngs1.overs : 0) : ''}</div>
+</div>
+<div class="team-info">
+    <img src="${team2LogoUrl}" alt="${team2.teamName || ''}" class="team-logo" width="50" height="50">
+    <div class="team-name">${team2.teamName || ''}</div>
+    <div class="team-score">Score: 🏏 ${matchScore && matchScore.team2Score && matchScore.team2Score.inngs1 ? matchScore.team2Score.inngs1.runs + '/' + (matchScore.team2Score.inngs1.wickets !== undefined ? matchScore.team2Score.inngs1.wickets : 0) + ' -> Overs: ' + (matchScore.team2Score.inngs1.overs !== undefined ? matchScore.team2Score.inngs1.overs : 0) : 'Yet to bat'}</div>
+</div>
+  <div class="venue-info">Venue: ${venueInfo && venueInfo.ground ? venueInfo.ground + ', ' + venueInfo.city + ', ' + venueInfo.timezone : ''}</div>
+  <div class="status">Status: ${matchInfo && matchInfo.status ? matchInfo.status : ''}</div>
+`;
+
+// Set match status
+const matchStatus = matchInfo && matchInfo.status ? matchInfo.status : '';
+document.getElementById("status").innerText = matchStatus;
+
+seriesDetailsDiv.appendChild(matchElement);
     }
   } else {
     console.log('No IPL live action on the screen now, but the excitement never fades. 🏏');
