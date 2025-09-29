@@ -1,244 +1,1463 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Cricket Series Details</title>
-<style>
-/* Common CSS Styles */
-body {
-  font-family: Arial, sans-serif;
-  margin: 0;
-  padding: 0;
-}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CodeSphere - Web Development Agency</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
 
-.container {
-  max-width: 800px;
-  margin: 0 auto;
-  padding: 20px;
-  background-color: rgba(223, 240, 197, 0.3); /* Semi-transparent white background */
-  border-radius: 10px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-}
+        :root {
+            --primary: #3b82f6;
+            --primary-dark: #2563eb;
+            --secondary: #f59e0b;
+            --accent: #10b981;
+            --purple: #8b5cf6;
+            --pink: #ec4899;
+            --orange: #f97316;
+            --teal: #06b6d4;
+            
+            --bg-primary: #ffffff;
+            --bg-secondary: #f8fafc;
+            --bg-tertiary: #f1f5f9;
+            --bg-accent: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 50%, #f0fdf4 100%);
+            --bg-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --bg-card: rgba(255, 255, 255, 0.9);
+            
+            --text-primary: #1e293b;
+            --text-secondary: #475569;
+            --text-muted: #64748b;
+            --text-white: #ffffff;
+            
+            --border: #e2e8f0;
+            --border-light: #f1f5f9;
+            --border-accent: rgba(59, 130, 246, 0.2);
+            
+            --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            --shadow-md: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            --shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+            --shadow-xl: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            --shadow-colored: 0 20px 25px -5px rgba(59, 130, 246, 0.1);
+            
+            --gradient-primary: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 50%, #ec4899 100%);
+            --gradient-secondary: linear-gradient(135deg, #10b981 0%, #06b6d4 100%);
+            --gradient-warm: linear-gradient(135deg, #f59e0b 0%, #f97316 100%);
+        }
 
-h1 {
-  text-align: center;
-  color: #333;
-}
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-.match-info {
-  background-color: #fff;
-  border: 1px solid #ddd;
-  border-radius: 5px;
-  margin-bottom: 20px;
-  padding: 20px;
-}
+        html {
+            scroll-behavior: smooth;
+        }
 
-.match-info h2 {
-  margin-top: 0;
-}
+        body {
+            font-family: 'Inter', sans-serif;
+            line-height: 1.6;
+            color: var(--text-primary);
+            background: var(--bg-primary);
+            overflow-x: hidden;
+        }
 
-.team-info {
-  display: flex;
-  align-items: center;
-  margin-bottom: 10px;
-}
+        /* Loading Screen */
+        .loading-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--gradient-primary);
+            z-index: 10000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 1;
+            transition: opacity 0.8s ease-out;
+        }
 
-.team-logo {
-  margin-right: 10px;
-  border-radius: 50%;
-  border: 2px solid #fff;
-}
+        .loading-screen.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
 
-.team-name {
-  font-weight: bold;
-  margin-right: 20px;
-}
+        .loader {
+            width: 50px;
+            height: 50px;
+            border: 3px solid rgba(255,255,255,0.3);
+            border-top: 3px solid white;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
 
-.team-score {
-  font-weight: bold;
-  color: #007bff; /* Blue color for score */
-}
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
 
-.venue-info {
-  font-style: italic;
-}
+        /* Enhanced Header */
+        .header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border-light);
+            z-index: 1000;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
 
-.status {
-  font-weight: bold;
-  color: #28a745; /* Green color for status */
-}
-/* Mobile-Specific Styles */
-@media only screen and (max-width:600px) {
-  body {
-    background-image: url('Cricfeverhomepagemobbackground1.png');
-    background-size: cover;
-    background-repeat: no-repeat;
-    background-color: rgba(255, 255, 255, 0.8);
-    
-  }
+        .header.scrolled {
+            background: rgba(255, 255, 255, 0.98);
+            box-shadow: var(--shadow-md);
+            border-bottom: 1px solid var(--border-accent);
+        }
 
-  .container {
-    padding: 10px;
-  }
+        .header-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            min-height: 70px;
+        }
 
-  .team-info {
-    flex-direction: column;
-    align-items: flex-start;
-  }
-}
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            text-decoration: none;
+            z-index: 1001;
+        }
 
-/* Desktop-Specific Styles */
-@media screen and (min-width: 601px) {
-  body {
-    background-size: cover;
-    background-repeat: no-repeat;
-    background-image:url('Cricfeverhomepagelapbackground1.png');
-  }
-}
+        .brand-logo {
+            height: 40px;
+            width: auto;
+            transition: all 0.3s ease;
+        }
 
-</style>
+        .brand:hover .brand-logo {
+            transform: scale(1.05);
+            filter: drop-shadow(0 4px 12px rgba(59, 130, 246, 0.3));
+        }
+
+        .brand-text {
+            font-size: 1.4rem;
+            font-weight: 800;
+            background: var(--gradient-primary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        /* Desktop Navigation */
+        .nav-desktop {
+            display: none;
+            align-items: center;
+            gap: 2rem;
+        }
+
+        .nav-menu {
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+            list-style: none;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            padding: 0.6rem 1rem;
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.9rem;
+            border-radius: 10px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+        }
+
+        .nav-link::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.1) 0%, rgba(139, 92, 246, 0.1) 100%);
+            border-radius: 10px;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .nav-link:hover::before,
+        .nav-link.active::before {
+            opacity: 1;
+        }
+
+        .nav-link:hover,
+        .nav-link.active {
+            color: var(--text-primary);
+            transform: translateY(-1px);
+        }
+
+        .nav-link.active {
+            color: var(--primary);
+            font-weight: 600;
+        }
+
+        .btn-header {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.6rem 1.2rem;
+            background: var(--primary);
+            color: white;
+            text-decoration: none;
+            border-radius: 25px;
+            font-weight: 600;
+            font-size: 0.85rem;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: var(--shadow);
+        }
+
+        .btn-header:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        /* Mobile Menu */
+        .mobile-toggle {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            width: 44px;
+            height: 44px;
+            background: var(--bg-secondary);
+            border: 2px solid var(--border);
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            z-index: 1001;
+        }
+
+        .mobile-toggle:hover {
+            background: var(--bg-tertiary);
+            border-color: var(--primary);
+            transform: scale(1.05);
+        }
+
+        .mobile-toggle-bar {
+            width: 18px;
+            height: 2px;
+            background: var(--text-primary);
+            border-radius: 2px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            transform-origin: center;
+        }
+
+        .mobile-toggle-bar:nth-child(1) {
+            margin-bottom: 3px;
+        }
+
+        .mobile-toggle-bar:nth-child(3) {
+            margin-top: 3px;
+        }
+
+        .mobile-toggle.active .mobile-toggle-bar:nth-child(1) {
+            transform: rotate(45deg) translate(4px, 4px);
+        }
+
+        .mobile-toggle.active .mobile-toggle-bar:nth-child(2) {
+            opacity: 0;
+            transform: scaleX(0);
+        }
+
+        .mobile-toggle.active .mobile-toggle-bar:nth-child(3) {
+            transform: rotate(-45deg) translate(4px, -4px);
+        }
+
+        /* Mobile Navigation */
+        .nav-mobile {
+            position: fixed;
+            top: 0;
+            right: 0;
+            width: 100%;
+            height: 100vh;
+            background: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(20px);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 1.5rem;
+            transform: translateX(100%);
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            z-index: 1000;
+        }
+
+        .nav-mobile.active {
+            transform: translateX(0);
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .nav-mobile-menu {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1rem;
+            list-style: none;
+        }
+
+        .nav-mobile-link {
+            color: var(--text-primary);
+            text-decoration: none;
+            font-size: 1.3rem;
+            font-weight: 600;
+            padding: 0.75rem 1.5rem;
+            border-radius: 12px;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+
+        .nav-mobile-link:hover {
+            color: var(--primary);
+            background: var(--bg-secondary);
+            transform: scale(1.05);
+        }
+
+        .nav-mobile-cta {
+            margin-top: 1.5rem;
+            padding: 0.75rem 2rem;
+            background: var(--gradient-primary);
+            color: white;
+            text-decoration: none;
+            border-radius: 25px;
+            font-weight: 600;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            box-shadow: var(--shadow-md);
+        }
+
+        .nav-mobile-cta:hover {
+            transform: translateY(-2px) scale(1.05);
+            box-shadow: var(--shadow-lg);
+        }
+
+        /* Hero Section with Colors */
+        .hero {
+            min-height: 100vh;
+            background: var(--bg-accent);
+            display: flex;
+            align-items: center;
+            padding: 1.5rem 1rem;
+            padding-top: 5rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: -10%;
+            right: -10%;
+            width: 40%;
+            height: 40%;
+            background: var(--gradient-primary);
+            border-radius: 50%;
+            opacity: 0.05;
+            animation: float 20s infinite ease-in-out;
+        }
+
+        .hero::after {
+            content: '';
+            position: absolute;
+            bottom: -5%;
+            left: -5%;
+            width: 30%;
+            height: 30%;
+            background: var(--gradient-secondary);
+            border-radius: 50%;
+            opacity: 0.05;
+            animation: float 25s infinite ease-in-out reverse;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            33% { transform: translateY(-20px) rotate(120deg); }
+            66% { transform: translateY(10px) rotate(240deg); }
+        }
+
+        .hero-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 2rem;
+            align-items: center;
+            position: relative;
+            z-index: 2;
+        }
+
+        .hero-content {
+            text-align: center;
+            opacity: 0;
+            transform: translateY(30px);
+            animation: fadeInUp 1s ease 0.3s forwards;
+        }
+
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: var(--bg-card);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--border);
+            padding: 0.5rem 1rem;
+            border-radius: 50px;
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            margin-bottom: 1.5rem;
+            box-shadow: var(--shadow);
+        }
+
+        .hero-title {
+            font-size: 2.2rem;
+            font-weight: 800;
+            line-height: 1.2;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+        }
+
+        .hero-title-gradient {
+            background: var(--gradient-primary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero-description {
+            font-size: 1rem;
+            color: var(--text-secondary);
+            margin-bottom: 2rem;
+            max-width: 500px;
+            margin-left: auto;
+            margin-right: auto;
+            line-height: 1.6;
+        }
+
+        .hero-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            align-items: center;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1.5rem;
+            border-radius: 10px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+            min-width: 160px;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+            box-shadow: var(--shadow);
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .btn-secondary {
+            background: var(--bg-card);
+            color: var(--text-primary);
+            border: 1px solid var(--border);
+        }
+
+        .btn-secondary:hover {
+            background: var(--bg-tertiary);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow);
+        }
+
+        .hero-stats {
+            display: flex;
+            justify-content: center;
+            gap: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .stat {
+            text-align: center;
+            padding: 0.75rem;
+        }
+
+        .stat-number {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 0.25rem;
+        }
+
+        .stat-label {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            font-weight: 500;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Services Section with Colors */
+        .services {
+            padding: 4rem 1rem;
+            background: linear-gradient(135deg, #fef7ff 0%, #f0f9ff 50%, #f0fdf4 100%);
+            position: relative;
+        }
+
+        .services::before {
+            content: '';
+            position: absolute;
+            top: 10%;
+            left: 5%;
+            width: 20%;
+            height: 20%;
+            background: var(--gradient-warm);
+            border-radius: 50%;
+            opacity: 0.03;
+            filter: blur(40px);
+        }
+
+        .section-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .section-title {
+            font-size: 2rem;
+            font-weight: 800;
+            margin-bottom: 0.75rem;
+            color: var(--text-primary);
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .section-title.animate {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .section-subtitle {
+            font-size: 1rem;
+            color: var(--text-secondary);
+            max-width: 500px;
+            margin: 0 auto;
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1) 0.2s;
+        }
+
+        .section-subtitle.animate {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .services-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1.5rem;
+        }
+
+        .service-card {
+            background: var(--bg-card);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 2rem;
+            text-align: center;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            opacity: 0;
+            transform: translateY(30px);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .service-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: var(--gradient-primary);
+            transform: scaleX(0);
+            transition: transform 0.4s ease;
+        }
+
+        .service-card.animate {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .service-card:hover {
+            transform: translateY(-8px);
+            box-shadow: var(--shadow-xl);
+            border-color: var(--border-accent);
+        }
+
+        .service-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .service-icon {
+            width: 70px;
+            height: 70px;
+            background: var(--gradient-primary);
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1.5rem;
+            font-size: 1.8rem;
+            transition: all 0.3s ease;
+            box-shadow: var(--shadow);
+        }
+
+        .service-card:hover .service-icon {
+            transform: scale(1.1) rotate(5deg);
+            box-shadow: var(--shadow-colored);
+        }
+
+        .service-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin-bottom: 0.75rem;
+            color: var(--text-primary);
+        }
+
+        .service-description {
+            color: var(--text-secondary);
+            line-height: 1.6;
+            font-size: 0.9rem;
+        }
+
+        /* About Section with Colors */
+        .about {
+            padding: 4rem 1rem;
+            background: linear-gradient(135deg, #fff7ed 0%, #fef3c7 50%, #ecfdf5 100%);
+            position: relative;
+        }
+
+        .about::after {
+            content: '';
+            position: absolute;
+            bottom: 15%;
+            right: 10%;
+            width: 25%;
+            height: 25%;
+            background: var(--gradient-secondary);
+            border-radius: 50%;
+            opacity: 0.03;
+            filter: blur(50px);
+        }
+
+        .about-content {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 2.5rem;
+            align-items: center;
+        }
+
+        .about-text {
+            text-align: center;
+        }
+
+        .about-title {
+            font-size: 2rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .about-title.animate {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .about-description {
+            font-size: 1rem;
+            color: var(--text-secondary);
+            margin-bottom: 1.5rem;
+            line-height: 1.6;
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .about-description.animate {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .stat-card {
+            text-align: center;
+            padding: 1.5rem;
+            background: var(--bg-card);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            transition: all 0.3s ease;
+            opacity: 0;
+            transform: translateY(30px);
+            box-shadow: var(--shadow);
+        }
+
+        .stat-card.animate {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-md);
+            border-color: var(--border-accent);
+        }
+
+        .about-visual {
+            display: flex;
+            justify-content: center;
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .about-visual.animate {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .visual-card {
+            width: 100%;
+            max-width: 300px;
+            height: 240px;
+            background: var(--gradient-primary);
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            color: white;
+            box-shadow: var(--shadow-xl);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .visual-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(255,255,255,0.1), transparent);
+            animation: shine 3s infinite;
+        }
+
+        @keyframes shine {
+            0% { transform: rotate(45deg) translate(-100%, -100%); }
+            50% { transform: rotate(45deg) translate(0, 0); }
+            100% { transform: rotate(45deg) translate(100%, 100%); }
+        }
+
+        /* Contact Section with Colors */
+        .contact {
+            padding: 4rem 1rem;
+            background: linear-gradient(135deg, #f0f9ff 0%, #e0e7ff 50%, #fdf4ff 100%);
+            position: relative;
+        }
+
+        .contact::before {
+            content: '';
+            position: absolute;
+            top: 20%;
+            left: 10%;
+            width: 15%;
+            height: 15%;
+            background: var(--gradient-primary);
+            border-radius: 50%;
+            opacity: 0.04;
+            filter: blur(30px);
+        }
+
+        .contact-content {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .contact-title {
+            font-size: 2rem;
+            font-weight: 800;
+            margin-bottom: 0.75rem;
+            color: var(--text-primary);
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .contact-title.animate {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .contact-description {
+            font-size: 1rem;
+            color: var(--text-secondary);
+            margin-bottom: 2rem;
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1) 0.2s;
+        }
+
+        .contact-description.animate {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .contact-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1rem;
+            margin-bottom: 2.5rem;
+        }
+
+        .contact-card {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.75rem;
+            padding: 1.5rem;
+            background: var(--bg-card);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            transition: all 0.3s ease;
+            opacity: 0;
+            transform: translateY(30px);
+            box-shadow: var(--shadow);
+        }
+
+        .contact-card.animate {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .contact-card:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-md);
+            border-color: var(--border-accent);
+        }
+
+        .contact-icon {
+            font-size: 1.3rem;
+            color: var(--primary);
+        }
+
+        .contact-text {
+            font-weight: 600;
+            color: var(--text-primary);
+            font-size: 0.9rem;
+        }
+
+        /* Footer */
+        .footer {
+            padding: 2.5rem 1rem;
+            background: white;
+            border-top: 1px solid var(--border);
+            text-align: center;
+        }
+
+        .footer-text {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+
+        /* Responsive Design */
+        @media (min-width: 640px) {
+            .header-container {
+                padding: 0 1.5rem;
+            }
+
+            .hero-title {
+                font-size: 2.8rem;
+            }
+
+            .hero-description {
+                font-size: 1.1rem;
+            }
+
+            .hero-actions {
+                flex-direction: row;
+                justify-content: center;
+            }
+
+            .services-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 2rem;
+            }
+
+            .contact-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        @media (min-width: 768px) {
+            .nav-desktop {
+                display: flex;
+            }
+
+            .mobile-toggle {
+                display: none;
+            }
+
+            .hero-container {
+                grid-template-columns: 1fr 1fr;
+                gap: 4rem;
+            }
+
+            .hero-content {
+                text-align: left;
+            }
+
+            .hero-title {
+                font-size: 3.2rem;
+            }
+
+            .hero-actions {
+                justify-content: flex-start;
+            }
+
+            .about-content {
+                grid-template-columns: 1fr 1fr;
+                gap: 4rem;
+            }
+
+            .about-text {
+                text-align: left;
+            }
+
+            .section-title {
+                font-size: 2.5rem;
+            }
+
+            .hero-stats {
+                justify-content: flex-start;
+            }
+        }
+
+        @media (min-width: 1024px) {
+            .services-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+
+            .hero-title {
+                font-size: 3.8rem;
+            }
+
+            .header-container {
+                padding: 0 2rem;
+            }
+        }
+
+        @media (min-width: 1280px) {
+            .hero-title {
+                font-size: 4.2rem;
+            }
+        }
+
+        /* Animation Classes */
+        .animate-on-scroll {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .animate-on-scroll.animate {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Performance optimizations */
+        @media (prefers-reduced-motion: reduce) {
+            * {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
+    </style>
 </head>
 <body>
+    <!-- Loading Screen -->
+    <div class="loading-screen" id="loadingScreen">
+        <div class="loader"></div>
+    </div>
 
-<div class="container">
-  <h1 style="font-family: monospace;color: #14fc61;">Cricket Series Details</h1>
-  <div id="seriesDetails"></div>
-  <div id="type" style="margin-left: 10%;">
-    <div id="errorMessage" style="color: #ffffff; border-radius: 20px;font-family: 'Times New Roman', Times, serif; margin-left: -12%;
-    text-align: center;"></div>
-  </div>
+    <!-- Enhanced Header -->
+    <header class="header" id="header">
+        <div class="header-container">
+            <a href="#home" class="brand">
+                <img src="images/logo.jpeg" alt="CodeSphere" class="brand-logo" />
+                
+            </a>
 
-   
-</div>
-<marquee width="80%" direction="left" height="100px">
-  <p style="color: #1fffa2;">Welcome to the ultimate destination for cricket lovers 🏏, where every boundary and wicket unfolds a story of passion and excitement! 🌟</p>
-  </marquee>
+            <nav class="nav-desktop">
+                <ul class="nav-menu">
+                    <li><a href="#home" class="nav-link active">Home</a></li>
+                    <li><a href="#services" class="nav-link">Services</a></li>
+                    <li><a href="#about" class="nav-link">About</a></li>
+                    <li><a href="#contact" class="nav-link">Contact</a></li>
+                </ul>
+            </nav>
 
-  <marquee width="60%" direction="left" height="100px">
-    <p id="status" style="color: #eeffa2; background-color: #252424;"></p>
-    <p id="status" style="color: #eeffa2; background-color: #252424;"></p>
-    </marquee>
-<script>
-// JavaScript code for fetching and displaying series details goes here
-async function fetchData() {
-  // Function to fetch data from API
-  const url = 'https://cricbuzz-cricket.p.rapidapi.com/matches/v1/live';
-  const options = {
-    method: 'GET',
-    headers: {
-      'X-RapidAPI-Key': 'bedfc3e9f7msha22ebaa60d69127p110944jsn0a88ad6dff9c',
-      'X-RapidAPI-Host': 'cricbuzz-cricket.p.rapidapi.com'
-    }
-  };
+            <div style="display: flex; align-items: center; gap: 1rem;">
+                <a href="#contact" class="btn-header">
+                    <span>Get Started</span>
+                    <span>→</span>
+                </a>
 
-  try {
-    const response = await fetch(url, options);
-    console.log(response)
-    const data = await response.json();
-    console.log(data);
-    if (data.message) {
-      throw new Error(data.message);
-    }
-    return data; // Return JSON data
-  } catch (error) {
-    console.error(error);
-   // displayErrorMessage("Sorry for the inconvenience. Site maintenance in progress.🛠️ Please try again later. Have a good day! 💫😇");
-   displayErrorMessage("No IPL live action on the screen now, but the excitement never fades. 🏏")
-   
-  }
-}
+                <button class="mobile-toggle" id="mobileToggle">
+                    <span class="mobile-toggle-bar"></span>
+                    <span class="mobile-toggle-bar"></span>
+                    <span class="mobile-toggle-bar"></span>
+                </button>
+            </div>
+        </div>
+    </header>
 
-async function fetchTeamLogo(imageId) {
-  // Function to fetch team logo using imageId
-  const url = `https://cricbuzz-cricket.p.rapidapi.com/img/v1/i1/c${imageId}/i.jpg`;
-  const options = {
-    method: 'GET',
-    headers: {
-      'X-RapidAPI-Key': 'bedfc3e9f7msha22ebaa60d69127p110944jsn0a88ad6dff9c',
-      'X-RapidAPI-Host': 'cricbuzz-cricket.p.rapidapi.com'
-    }
-  };
+    <!-- Mobile Navigation -->
+    <nav class="nav-mobile" id="mobileNav">
+        <ul class="nav-mobile-menu">
+            <li><a href="#home" class="nav-mobile-link">Home</a></li>
+            <li><a href="#services" class="nav-mobile-link">Services</a></li>
+            <li><a href="#about" class="nav-mobile-link">About</a></li>
+            <li><a href="#contact" class="nav-mobile-link">Contact</a></li>
+        </ul>
+        <a href="#contact" class="nav-mobile-cta">Get Started</a>
+    </nav>
 
-  try {
-    const response = await fetch(url, options);
-    return response.url; // Return URL of fetched image
-  } catch (error) {
-    console.error(error);
-    return ''; // Return empty string if error occurs
-  }
-}
-function displayErrorMessage(message) {
-  const errorMessageDiv = document.getElementById('errorMessage');
-  errorMessageDiv.innerHTML = `<p>${message}</p>`;
-}
-async function displaySeriesDetails() {
-  const data = await fetchData();
-  if (!data || !data.typeMatches) {
-    console.error('Error: No data or typeMatches array found');
-    return;
-  }
+    <!-- Hero Section -->
+    <section class="hero" id="home">
+        <div class="hero-container">
+            <div class="hero-content">
+                <div class="hero-badge">
+                    <span>✨</span>
+                    <span>Premium Web Development</span>
+                </div>
+                
+                <h1 class="hero-title">
+                    Build <span class="hero-title-gradient">Amazing</span> 
+                    Digital Experiences
+                </h1>
+                
+                <p class="hero-description">
+                    We create stunning, high-performance websites and applications that drive real business results. Transform your digital presence with our expert team.
+                </p>
+                
+                <div class="hero-actions">
+                    <a href="#contact" class="btn btn-primary">
+                        <span>Start Project</span>
+                        <span>→</span>
+                    </a>
+                    <a href="#services" class="btn btn-secondary">
+                        <span>View Services</span>
+                        <span>↗</span>
+                    </a>
+                </div>
+                
+                <div class="hero-stats">
+                    <div class="stat">
+                        <div class="stat-number" data-count="200">0</div>
+                        <div class="stat-label">Projects</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-number">4.9★</div>
+                        <div class="stat-label">Rating</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-number">24/7</div>
+                        <div class="stat-label">Support</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="hero-visual animate-on-scroll">
+                <div class="visual-card">
+                    🚀
+                </div>
+            </div>
+        </div>
+    </section>
 
-  const seriesName = 'ICC Champions Trophy, 2025';
-  const seriesMatch = data.typeMatches.find(match => {
-    if (match.seriesMatches && Array.isArray(match.seriesMatches)) {
-      return match.seriesMatches.some(series => {
-        return series.seriesAdWrapper && series.seriesAdWrapper.seriesName === seriesName;
-      });
-    }
-    return false;
-  });
+    <!-- Services Section -->
+    <section class="services" id="services">
+        <div class="section-container">
+            <div class="section-header">
+                <h2 class="section-title animate-on-scroll">What We Do</h2>
+                <p class="section-subtitle animate-on-scroll">Comprehensive digital solutions to grow your business</p>
+            </div>
+            
+            <div class="services-grid">
+                <div class="service-card animate-on-scroll">
+                    <div class="service-icon">🌟</div>
+                    <h3 class="service-title">Web Development</h3>
+                    <p class="service-description">Modern, responsive websites built with cutting-edge technologies for optimal performance.</p>
+                </div>
+                
+                <div class="service-card animate-on-scroll">
+                    <div class="service-icon">📱</div>
+                    <h3 class="service-title">Mobile Apps</h3>
+                    <p class="service-description">Native and cross-platform mobile applications that engage users and drive growth.</p>
+                </div>
+                
+                <div class="service-card animate-on-scroll">
+                    <div class="service-icon">🎨</div>
+                    <h3 class="service-title">UI/UX Design</h3>
+                    <p class="service-description">Beautiful, intuitive designs that convert visitors into customers.</p>
+                </div>
+                
+                <div class="service-card animate-on-scroll">
+                    <div class="service-icon">🛍️</div>
+                    <h3 class="service-title">E-commerce</h3>
+                    <p class="service-description">Complete online store solutions with secure payments and management systems.</p>
+                </div>
+                
+                <div class="service-card animate-on-scroll">
+                    <div class="service-icon">⚡</div>
+                    <h3 class="service-title">Performance</h3>
+                    <p class="service-description">Speed optimization for lightning-fast loading times and better SEO.</p>
+                </div>
+                
+                <div class="service-card animate-on-scroll">
+                    <div class="service-icon">🔧</div>
+                    <h3 class="service-title">Maintenance</h3>
+                    <p class="service-description">Ongoing support to keep your digital assets secure and updated.</p>
+                </div>
+            </div>
+        </div>
+    </section>
 
-  if (seriesMatch) {
-    const matches = seriesMatch.seriesMatches[0].seriesAdWrapper.matches;
-    const seriesDetailsDiv = document.getElementById('seriesDetails');
+    <!-- About Section -->
+    <section class="about" id="about">
+        <div class="section-container">
+            <div class="about-content">
+                <div class="about-text">
+                    <h2 class="about-title animate-on-scroll">Why Choose CodeSphere?</h2>
+                    <p class="about-description animate-on-scroll">We're passionate about creating digital experiences that make a real impact. Our team combines technical expertise with creative vision to deliver solutions that drive business growth.</p>
+                    <p class="about-description animate-on-scroll">From startups to enterprises, we've helped businesses transform their digital presence with innovative, scalable solutions.</p>
+                    
+                    <div class="stats-grid">
+                        <div class="stat-card animate-on-scroll">
+                            <div class="stat-number" data-count="200">0</div>
+                            <div class="stat-label">Projects</div>
+                        </div>
+                        <div class="stat-card animate-on-scroll">
+                            <div class="stat-number" data-count="98">0</div>
+                            <div class="stat-label">Success Rate</div>
+                        </div>
+                        <div class="stat-card animate-on-scroll">
+                            <div class="stat-number" data-count="5">0</div>
+                            <div class="stat-label">Years</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="about-visual animate-on-scroll">
+                    <div class="visual-card">
+                        💡
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
 
-    for (const match of matches) {
-      const matchInfo = match.matchInfo;
-      const matchScore = match.matchScore;
-      const team1 = matchInfo && matchInfo.team1 ? matchInfo.team1 : {};
-      const team2 = matchInfo && matchInfo.team2 ? matchInfo.team2 : {};
-      const venueInfo = matchInfo && matchInfo.venueInfo ? matchInfo.venueInfo : {};
+    <!-- Contact Section -->
+    <section class="contact" id="contact">
+        <div class="section-container">
+            <div class="contact-content">
+                <h2 class="contact-title animate-on-scroll">Let's Work Together</h2>
+                <p class="contact-description animate-on-scroll">Ready to transform your digital presence? Get in touch and let's discuss your project.</p>
+            </div>
+            
+            <div class="contact-grid">
+                <div class="contact-card animate-on-scroll">
+                    <span class="contact-icon">📧</span>
+                    <span class="contact-text">hello@codesphere.com</span>
+                </div>
+                <div class="contact-card animate-on-scroll">
+                    <span class="contact-icon">📱</span>
+                    <span class="contact-text">+91 98765 43210</span>
+                </div>
+                <div class="contact-card animate-on-scroll">
+                    <span class="contact-icon">📍</span>
+                    <span class="contact-text">Kerala, India</span>
+                </div>
+            </div>
+            
+            <div style="text-align: center; margin-top: 2.5rem;">
+                <a href="mailto:hello@codesphere.com" class="btn btn-primary animate-on-scroll">
+                    <span>Contact Us Now</span>
+                    <span>→</span>
+                </a>
+            </div>
+        </div>
+    </section>
 
-// Fetch team logos asynchronously
-const team1LogoUrl = await fetchTeamLogo(team1.imageId);
-const team2LogoUrl = await fetchTeamLogo(team2.imageId);
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="section-container">
+            <p class="footer-text">&copy; 2025 CodeSphere. All rights reserved. Crafted with ❤️ in Kerala.</p>
+        </div>
+    </footer>
 
-// Create match element
-const matchElement = document.createElement('div');
-matchElement.classList.add('match-info');
-matchElement.innerHTML = `
-  <h2>${matchInfo && matchInfo.matchDesc ? matchInfo.matchDesc : ''}</h2>
-  <div class="team-info">
-    <img src="${team1LogoUrl}" alt="${team1.teamName || ''}" class="team-logo" width="50" height="50">
-    <div class="team-name">${team1.teamName || ''}</div>
-    <div class="team-score">Score: 🏏 ${matchScore && matchScore.team1Score && matchScore.team1Score.inngs1 ? matchScore.team1Score.inngs1.runs + '/' + (matchScore.team1Score.inngs1.wickets !== undefined ? matchScore.team1Score.inngs1.wickets : 0) + ' -> Overs: ' + (matchScore.team1Score.inngs1.overs !== undefined ? matchScore.team1Score.inngs1.overs : 0) : ''}</div>
-</div>
-<div class="team-info">
-    <img src="${team2LogoUrl}" alt="${team2.teamName || ''}" class="team-logo" width="50" height="50">
-    <div class="team-name">${team2.teamName || ''}</div>
-    <div class="team-score">Score: 🏏 ${matchScore && matchScore.team2Score && matchScore.team2Score.inngs1 ? matchScore.team2Score.inngs1.runs + '/' + (matchScore.team2Score.inngs1.wickets !== undefined ? matchScore.team2Score.inngs1.wickets : 0) + ' -> Overs: ' + (matchScore.team2Score.inngs1.overs !== undefined ? matchScore.team2Score.inngs1.overs : 0) : 'Yet to bat'}</div>
-</div>
-  <div class="venue-info">Venue: ${venueInfo && venueInfo.ground ? venueInfo.ground + ', ' + venueInfo.city + ', ' + venueInfo.timezone : ''}</div>
-  <div class="status">Status: ${matchInfo && matchInfo.status ? matchInfo.status : ''}</div>
-`;
+    <script>
+        // Loading Screen
+        window.addEventListener('load', function() {
+            setTimeout(() => {
+                document.getElementById('loadingScreen').classList.add('hidden');
+            }, 600);
+        });
 
-// Set match status
-const matchStatus = matchInfo && matchInfo.status ? matchInfo.status : '';
-document.getElementById("status").innerText = matchStatus;
+        // Mobile Menu Toggle
+        const mobileToggle = document.getElementById('mobileToggle');
+        const mobileNav = document.getElementById('mobileNav');
 
-seriesDetailsDiv.appendChild(matchElement);
-    }
-  } else {
-    console.log('No IPL live action on the screen now, but the excitement never fades. 🏏');
-    document.getElementById("status").innerText = "No IPL live action on the screen now, but the excitement never fades. 🏏";
-  }
-}
+        mobileToggle.addEventListener('click', function() {
+            mobileToggle.classList.toggle('active');
+            mobileNav.classList.toggle('active');
+            document.body.style.overflow = mobileNav.classList.contains('active') ? 'hidden' : '';
+        });
 
+        // Close mobile menu on link click
+        document.querySelectorAll('.nav-mobile-link, .nav-mobile-cta').forEach(link => {
+            link.addEventListener('click', () => {
+                mobileToggle.classList.remove('active');
+                mobileNav.classList.remove('active');
+                document.body.style.overflow = '';
+            });
+        });
 
-// Call the displaySeriesDetails function
-displaySeriesDetails();
-</script>
+        // Smooth scrolling
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
 
+        // Header scroll effect
+        window.addEventListener('scroll', function() {
+            const header = document.getElementById('header');
+            if (window.scrollY > 50) {
+                header.classList.add('scrolled');
+            } else {
+                header.classList.remove('scrolled');
+            }
+        });
+
+        // Active navigation
+        function updateActiveNav() {
+            const sections = document.querySelectorAll('section');
+            const navLinks = document.querySelectorAll('.nav-link');
+            
+            let current = '';
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop - 100;
+                if (scrollY >= sectionTop) {
+                    current = section.getAttribute('id');
+                }
+            });
+
+            navLinks.forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('href') === `#${current}`) {
+                    link.classList.add('active');
+                }
+            });
+        }
+
+        window.addEventListener('scroll', updateActiveNav);
+
+        // Enhanced Intersection Observer for Repeated Animations
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver(function(entries) {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('animate');
+                    
+                    // Animate counters
+                    if (entry.target.hasAttribute('data-count')) {
+                        animateCounter(entry.target);
+                    }
+                } else {
+                    // Remove animation class when element goes out of view
+                    // This allows re-animation on re-entry
+                    entry.target.classList.remove('animate');
+                }
+            });
+        }, observerOptions);
+
+        // Observe all animated elements
+        document.querySelectorAll('.animate-on-scroll, .section-title, .section-subtitle, .service-card, .about-title, .about-description, .stat-card, .about-visual, .contact-title, .contact-description, .contact-card').forEach(el => {
+            observer.observe(el);
+        });
+
+        // Counter animation with reset capability
+        function animateCounter(element) {
+            const target = parseInt(element.getAttribute('data-count'));
+            let current = 0;
+            const increment = target / 40;
+            
+            // Clear any existing animation
+            if (element.animationTimer) {
+                clearInterval(element.animationTimer);
+            }
+            
+            element.animationTimer = setInterval(() => {
+                current += increment;
+                if (current >= target) {
+                    current = target;
+                    clearInterval(element.animationTimer);
+                    element.animationTimer = null;
+                }
+                
+                let displayValue = Math.floor(current);
+                if (element.classList.contains('stat-number') && target === 98) {
+                    element.textContent = displayValue + '%';
+                } else if (element.textContent.includes('★')) {
+                    element.textContent = '4.9★';
+                } else if (element.textContent.includes('/')) {
+                    element.textContent = '24/7';
+                } else {
+                    element.textContent = displayValue + '+';
+                }
+            }, 50);
+        }
+
+        // Stagger animations with delay reset
+        document.addEventListener('DOMContentLoaded', function() {
+            const serviceCards = document.querySelectorAll('.service-card');
+            serviceCards.forEach((card, index) => {
+                card.style.transitionDelay = `${index * 0.1}s`;
+            });
+
+            const contactCards = document.querySelectorAll('.contact-card');
+            contactCards.forEach((card, index) => {
+                card.style.transitionDelay = `${index * 0.1}s`;
+            });
+
+            const statCards = document.querySelectorAll('.stat-card');
+            statCards.forEach((card, index) => {
+                card.style.transitionDelay = `${index * 0.1}s`;
+            });
+        });
+
+        // Touch gestures for mobile
+        let touchStartX = 0;
+        document.addEventListener('touchstart', function(e) {
+            touchStartX = e.changedTouches[0].screenX;
+        });
+
+        document.addEventListener('touchend', function(e) {
+            const touchEndX = e.changedTouches[0].screenX;
+            if (touchStartX - touchEndX > 50 && mobileNav.classList.contains('active')) {
+                mobileToggle.classList.remove('active');
+                mobileNav.classList.remove('active');
+                document.body.style.overflow = '';
+            }
+        });
+
+        // Performance optimization: throttle scroll events
+        let ticking = false;
+        function updateOnScroll() {
+            if (!ticking) {
+                requestAnimationFrame(function() {
+                    updateActiveNav();
+                    ticking = false;
+                });
+                ticking = true;
+            }
+        }
+
+        window.addEventListener('scroll', updateOnScroll);
+
+        // Reset animations when scrolling out and back in
+        function resetAnimationDelays() {
+            const animatedElements = document.querySelectorAll('.service-card, .contact-card, .stat-card');
+            animatedElements.forEach((element, index) => {
+                element.addEventListener('transitionend', function() {
+                    if (!element.classList.contains('animate')) {
+                        element.style.transitionDelay = `${index * 0.1}s`;
+                    }
+                });
+            });
+        }
+
+        resetAnimationDelays();
+    </script>
 </body>
 </html>
